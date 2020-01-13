@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.2.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<!-- Oracle 데이터베이스 연결 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@127.0.0.1:1521:xe" />
+		<property name="username" value="simpleordersystem"/>
+		<property name="password" value="1234"/>
+	</bean>	
+	
+	<!-- SqlSession
+		Mybatis 설정파일을 바탕으로 SqlSessionFactory 생성
+	-->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		
+		<!--  Mybatis 설정 파일의 위치 지정 -->
+		<property name="configLocation" value="classpath:/mybatis/mybatis-config.xml" />
+		<!--  SQL 파일의 위치 지정 -->
+<!-- 		<property name="mapperLocations" value="classpath:/sqlmap/*.xml" /> -->
+	</bean>
+	<!-- sqlSession의 실제 구현체. 역할은 다음과 같음
+		1.자동 트랜잭션관리(commit()/rollback())등 수동 트랜잭션 관리 불가 - spring안에서 수동으로 트랜잭션관리 위해선 PlatformTransactionManager 필요)
+		2.sqlSEssion 자동 메모리 해제
+	 -->
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
+		<constructor-arg index="0" ref="sqlSessionFactory"></constructor-arg>
+	</bean>
+	<!-- 어노테이션 기반의 트랜잭션을 사용 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>		
+</beans>

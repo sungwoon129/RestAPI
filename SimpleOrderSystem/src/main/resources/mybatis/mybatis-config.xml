@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<!--   xml 파일의 존재 이유는 서로 다른 주체간에 정보를 전달하기 위함 . 그래서 작성자와 그것을 읽는자 간 서로 이해할 수 있도록  -->
+<!-- 작성 방법이 미리 정의되어 있어야함. 그것을 정해놓은 스펙 문서를 DTD 라고 하고, xml 파일의 가장 윗부분에 명시하여 해당 xml 문서가 어떤 스펙으로 작성되어있는지 알림. -->
+
+<configuration>
+
+	<settings>
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+	</settings>
+	
+	<typeAliases>
+		<typeAlias type="kr.ac.kopo.model.User" alias="User"/>
+		<typeAlias type="kr.ac.kopo.model.Item" alias="Item"/>
+		<typeAlias type="kr.ac.kopo.model.Order" alias="Order"/>
+	</typeAliases>
+	
+	<mappers>
+		<mapper resource="mybatis/user.xml"/>
+		<mapper resource="mybatis/item.xml"/>
+		<mapper resource="mybatis/order.xml"/> 
+	</mappers>
+	
+</configuration>
+

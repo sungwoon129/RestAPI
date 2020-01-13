@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="user">
+	<sql id="search">
+		<where>
+			<if test="search != null and keyword != '' and keyword != null">
+				${search} LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+			</if>
+		</where>
+
+	</sql>
+
+	<insert id="add">
+		INSERT INTO users(user_id,username,password,email,address,phone)
+		VALUES (
+			USER_SEQ.NEXTVAL,
+			#{username},
+			#{password},
+			#{email},
+			#{address},
+			#{phone}
+		)
+	</insert>
+	<select id="total" resultType="Integer">
+		SELECT COUNT(*) 
+		FROM users
+		<include refid="search"></include>
+	</select>
+	<select id="getList" resultType="User">
+		SELECT * 
+		FROM users
+		<include refid="search"></include> 
+		ORDER BY user_id DESC 
+		LIMIT #{start},#{perPage}
+	
+	</select>
+	
+	<select id="getItem" resultType="User">
+		SELECT * FROM users
+		WHERE username = #{username}
+	</select>
+	<select id="isExist" resultType="Integer" parameterType="hashmap">
+		SELECT count(*) FROM users 
+		
+			<if test='inputValue != ""'>
+				WHERE ${inputType} = #{inputValue}
+			</if>
+
+			
+	</select>
+</mapper>
